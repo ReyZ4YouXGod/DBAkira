@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reyz | Premium Dashboard</title>
+    <title>Dashboard</title>
     <script src="config.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
@@ -83,7 +83,7 @@
             <h2 id="dn" style="font-size: 18px;">User</h2>
             <span id="dr" class="badge">Role</span>
         </div>
-        <img src="https://e.top4top.io/p_3651z3u0b4.jpg" class="profile-mini">
+        <img src="https://b.top4top.io/p_3651j7eif2.jpg" class="profile-mini">
     </div>
 
     <input type="number" id="numberInput" placeholder="628xxxxxxxxxx">
@@ -197,16 +197,5 @@
         setTimeout(() => { st.innerHTML = ''; }, 3000);
     }
 </script>
-</body>
-</html>        }
-
-        async function createUser() {
-            try {
-                await axios.post(api.userUrl, { username: nu.value, pass: np.value, role: nr.value });
-                alert("Sukses!"); nu.value = ""; np.value = "";
-            } catch(e) { alert("Gagal!"); }
-        }
-        fetchList();
-    </script>
 </body>
 </html>
