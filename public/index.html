@@ -1,37 +1,204 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login </title>
+    <title>Login Page </title>
     <script src="config.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { background: #0f172a; color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .card { background: #1e293b; padding: 30px; border-radius: 20px; text-align: center; width: 320px; border: 1px solid #334155; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
-        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid #334155; background: #0f172a; color: white; box-sizing: border-box; text-align: center; }
-        button { width: 100%; padding: 12px; background: #38bdf8; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; color: #0f172a; }
+        :root {
+            --primary: #38bdf8;
+            --bg: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.8);
+        }
+
+        body {
+            background-color: var(--bg);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.1) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.1) 0px, transparent 50%);
+            color: white;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            /* Padding atas dihilangkan karena foto nempel di atas */
+            padding: 0 0 40px 0; 
+            border-radius: 28px;
+            text-align: center;
+            width: 100%;
+            max-width: 350px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.6s ease-out;
+            overflow: hidden; /* Penting agar foto tidak keluar dari border radius */
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Styling Foto Banner Lebar */
+        .banner-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover; /* Agar foto tidak gepeng */
+            border-bottom: 2px solid var(--primary);
+            margin-bottom: 25px;
+        }
+
+        .content {
+            padding: 0 30px;
+        }
+
+        h2 { margin-bottom: 5px; font-size: 24px; letter-spacing: -0.5px; }
+        .subtitle { color: #94a3b8; font-size: 14px; margin-bottom: 25px; }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 15px;
+            padding-left: 45px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(15, 23, 42, 0.6);
+            color: white;
+            box-sizing: border-box;
+            outline: none;
+            font-size: 15px;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.1);
+        }
+
+        .input-group i.main-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+        }
+
+        .toggle-pass {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .toggle-pass:hover { color: var(--primary); }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary);
+            color: #0f172a;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(56, 189, 248, 0.3);
+            background: #7dd3fc;
+        }
+
+        #msg { margin-top: 15px; font-size: 13px; color: #f43f5e; min-height: 20px; }
     </style>
 </head>
 <body>
+
     <div class="card">
-        <img src="https://e.top4top.io/p_3651z3u0b4.jpg" style="width: 80px; border-radius: 50%; border: 2px solid #38bdf8; margin-bottom: 10px;">
-        <h2>Access Portal</h2>
-        <input type="text" id="u" placeholder="Username">
-        <input type="password" id="p" placeholder="Password">
-        <button onclick="login()">Login</button>
+        <img src="https://e.top4top.io/p_3651z3u0b4.jpg" class="banner-img">
+        
+        <div class="content">
+            <h2>Login Here</h2>
+            <p class="subtitle">Security Access Portal</p>
+
+            <div class="input-group">
+                <i class="fas fa-user main-icon"></i>
+                <input type="text" id="u" placeholder="Username">
+            </div>
+
+            <div class="input-group">
+                <i class="fas fa-lock main-icon"></i>
+                <input type="password" id="p" placeholder="Password">
+                <i class="fas fa-eye toggle-pass" id="eyeIcon" onclick="togglePassword()"></i>
+            </div>
+
+            <button onclick="login()" id="btnLogin">Sign In</button>
+            <div id="msg"></div>
+        </div>
     </div>
+
     <script>
+        function togglePassword() {
+            const pInput = document.getElementById('p');
+            const eyeIcon = document.getElementById('eyeIcon');
+            if (pInput.type === "password") {
+                pInput.type = "text";
+                eyeIcon.classList.remove('fa-eye');
+                eyeIcon.classList.add('fa-eye-slash');
+            } else {
+                pInput.type = "password";
+                eyeIcon.classList.remove('fa-eye-slash');
+                eyeIcon.classList.add('fa-eye');
+            }
+        }
+
         async function login() {
+            const u = document.getElementById('u').value;
+            const p = document.getElementById('p').value;
+            const btn = document.getElementById('btnLogin');
+            const msg = document.getElementById('msg');
+
+            if(!u || !p) {
+                msg.innerText = "Isi semua kolom, Bos!";
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = "Authenticating...";
+            msg.innerText = "";
+
             try {
-                const res = await axios.post(window.CONFIG.api.loginUrl, { username: u.value, pass: p.value });
+                const res = await axios.post(window.CONFIG.api.loginUrl, { username: u, pass: p });
                 if(res.data.success) {
                     sessionStorage.setItem('isLogin', 'true');
                     sessionStorage.setItem('u', res.data.username);
                     sessionStorage.setItem('r', res.data.role);
                     window.location.href = 'dashboard.html';
                 }
-            } catch(e) { alert("Login Gagal! Cek User & Pass."); }
+            } catch(e) {
+                msg.innerText = "Access Denied! Cek kembali data kamu.";
+                btn.disabled = false;
+                btn.innerText = "Sign In";
+            }
         }
     </script>
 </body>
