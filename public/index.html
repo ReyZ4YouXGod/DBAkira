@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login </title>
+    <script src="config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        body { background: #0f172a; color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: #1e293b; padding: 30px; border-radius: 20px; text-align: center; width: 320px; border: 1px solid #334155; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid #334155; background: #0f172a; color: white; box-sizing: border-box; text-align: center; }
+        button { width: 100%; padding: 12px; background: #38bdf8; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; color: #0f172a; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <img src="https://e.top4top.io/p_3651z3u0b4.jpg" style="width: 80px; border-radius: 50%; border: 2px solid #38bdf8; margin-bottom: 10px;">
+        <h2>Access Portal</h2>
+        <input type="text" id="u" placeholder="Username">
+        <input type="password" id="p" placeholder="Password">
+        <button onclick="login()">Login</button>
+    </div>
+    <script>
+        async function login() {
+            try {
+                const res = await axios.post(window.CONFIG.api.loginUrl, { username: u.value, pass: p.value });
+                if(res.data.success) {
+                    sessionStorage.setItem('isLogin', 'true');
+                    sessionStorage.setItem('u', res.data.username);
+                    sessionStorage.setItem('r', res.data.role);
+                    window.location.href = 'dashboard.html';
+                }
+            } catch(e) { alert("Login Gagal! Cek User & Pass."); }
+        }
+    </script>
+</body>
+</html>
