@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard |</title>
+    <script src="config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        body { background: #0f172a; color: white; font-family: sans-serif; padding: 20px; }
+        .box { background: #1e293b; padding: 25px; border-radius: 20px; max-width: 450px; margin: auto; border: 1px solid #334155; }
+        .badge { padding: 4px 12px; border-radius: 50px; font-size: 10px; font-weight: 800; text-transform: uppercase; }
+        /* CSS ROLE */
+        .role-rahasia { background: linear-gradient(45deg, #ec4899, #8b5cf6); color: white; }
+        .role-owner { background: #f59e0b; color: black; }
+        .role-reseller { background: #10b981; color: white; }
+        
+        .item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding: 10px 0; }
+        input, select { width: 100%; padding: 12px; margin: 5px 0; border-radius: 10px; background: #0f172a; border: 1px solid #334155; color: white; box-sizing: border-box; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <script>if(sessionStorage.getItem('isLogin') !== 'true') window.location.href='index.html';</script>
+
+    <div class="box">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
+            <div>
+                <h2 id="dn">User</h2>
+                <span id="dr" class="badge">ROLE</span>
+            </div>
+            <button onclick="sessionStorage.clear();location.href='index.html'" style="background:#475569; border:none; color:white; padding:8px; border-radius:8px;">Logout</button>
+        </div>
+        
+        <input type="number" id="ni" placeholder="628xxxxxxxx">
+        <button onclick="addNum()" style="width:100%; background:#38bdf8; color:#0f172a; padding:12px; border-radius:10px; border:none; font-weight:bold; margin-bottom:20px;">Add Number</button>
+
+        <div id="adminPanel" class="hidden" style="border:1px dashed #38bdf8; padding:15px; border-radius:15px; margin-bottom: 20px;">
+            <p style="font-size:11px; color:#38bdf8; font-weight:bold; margin-bottom:10px;">👑 CREATE ACCOUNT</p>
+            <input type="text" id="nu" placeholder="New Username">
+            <input type="text" id="np" placeholder="New Password">
+            <select id="nr"><option value="Reseller">Reseller</option><option value="Owner">Owner</option></select>
+            <button onclick="createUser()" style="width:100%; background:#10b981; color:white; padding:10px; border-radius:10px; border:none; margin-top:5px;">Create</button>
+        </div>
+
+        <div id="list"></div>
+    </div>
+
+    <script>
+        const { github, api } = window.CONFIG;
+        const role = sessionStorage.getItem('r');
+        dn.innerText = sessionStorage.getItem('u');
+        dr.innerText = role;
+        
+        // Logika Badge & Panel
+        dr.className = 'badge role-' + role.toLowerCase();
+        if(role === 'Rahasia' || role === 'Owner') adminPanel.classList.remove('hidden');
+
+        async function fetchList() {
+            try {
+                const {data} = await axios.get(`https://api.github.com/repos/${github.owner}/${github.repo}/contents/${github.path}`, {headers:{Authorization:`token ${github.token}`}});
+                const nums = JSON.parse(atob(data.content)).dbny || [];
+                list.innerHTML = nums.reverse().map(n => `
+                    <div class="item">
+                        <span>📱 ${n}</span>
+                        ${(role==='Owner' || role==='Rahasia') ? `<button onclick="delNum('${n}')" style="background:#f43f5e; color:white; border:none; padding:4px 8px; border-radius:5px; font-size:10px;">Del</button>` : ''}
+                    </div>
+                `).join('');
+            } catch(e) { list.innerHTML = "Gagal memuat data GitHub."; }
+        }
+
+        async function addNum() {
+            const val = ni.value; if(!val) return;
+            const {data} = await axios.get(`https://api.github.com/repos/${github.owner}/${github.repo}/contents/${github.path}`, {headers:{Authorization:`token ${github.token}`}});
+            const json = JSON.parse(atob(data.content));
+            if(!json.dbny.includes(val)) {
+                json.dbny.push(val);
+                await axios.put(`https://api.github.com/repos/${github.owner}/${github.repo}/contents/${github.path}`, {message:'add', content:btoa(JSON.stringify(json,null,2)), sha:data.sha}, {headers:{Authorization:`token ${github.token}`}});
+                ni.value = ""; fetchList();
+            }
+        }
+
+        async function createUser() {
+            try {
+                await axios.post(api.userUrl, { username: nu.value, pass: np.value, role: nr.value });
+                alert("Sukses!"); nu.value = ""; np.value = "";
+            } catch(e) { alert("Gagal!"); }
+        }
+        fetchList();
+    </script>
+</body>
+</html>
