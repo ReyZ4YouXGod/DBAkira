@@ -1,6 +1,6 @@
 window.CONFIG = {
     github: {
-        token: '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',
+        token: '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',
         owner: 'ReyZ4YouXGod',
         repo: 'Keamanan',
         path: 'Dbnomor.json'
